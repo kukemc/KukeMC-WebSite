@@ -5,11 +5,11 @@ import api from '../utils/api';
 import { useTitle } from '../hooks/useTitle';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Ticket as TicketIcon, Plus, Search, Filter, 
+  Ticket as TicketIcon, Plus, 
   MessageSquare, Clock, CheckCircle, XCircle, 
   AlertCircle, Loader2, ChevronRight, Send, 
-  FileText, User, History, Image as ImageIcon,
-  Upload, Copy, Check, Server, ShieldCheck
+  FileText, History, Image as ImageIcon,
+  ShieldCheck
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Ticket, TicketLog, CreateTicketDTO } from '../types/ticket';
@@ -103,7 +103,7 @@ const ImageUpload = ({ onUploadComplete, disabled }: { onUploadComplete: (url: s
 
 const TicketCenter = () => {
   useTitle('工单中心 - KukeMC');
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
   const [playerUuid, setPlayerUuid] = useState<string | null>(null);
@@ -219,6 +219,7 @@ const TicketCenter = () => {
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     if (!replyContent.trim() || !selectedTicketId) return;
 
     setSendingReply(true);
@@ -425,8 +426,8 @@ const TicketCenter = () => {
 
                 {/* Conversation Logs */}
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 dark:bg-black/20">
-                  {ticketDetail.logs.map((log, index) => {
-                    const isMe = log.actor === user.username;
+                  {ticketDetail.logs.map((log) => {
+                    const isMe = user && log.actor === user.username;
                     const isSystem = ['assign', 'update_status', 'create'].includes(log.action);
                     
                     if (log.action === 'create') {

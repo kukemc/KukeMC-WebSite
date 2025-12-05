@@ -7,7 +7,7 @@ import {
   User, Clock, MessageSquare, 
   Trophy, AlertCircle, Loader2, Send, Shield, 
   Hash, Activity, CalendarDays,
-  Reply, Trash2, X, Heart, Edit2, Plus, AlertTriangle, ThumbsUp, PenLine, Image as ImageIcon, Upload, MessageCircle
+  Reply, Trash2, X, Heart, Edit2, Plus, AlertTriangle, ThumbsUp, Image as ImageIcon, Upload, MessageCircle
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '../context/AuthContext';
@@ -515,7 +515,7 @@ const Profile = () => {
   const handleLike = async () => {
     if (!user || !username) return;
     try {
-      const res = await api.post('/api/profile/like', { target_username: username }, {
+      await api.post('/api/profile/like', { target_username: username }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Optimistic update or refetch
