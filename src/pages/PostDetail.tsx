@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft, MessageSquare, Send, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { Post, Comment } from '../types/activity';
 import PostCard from '../components/PostCard';
 import MentionInput from '../components/MentionInput';
@@ -12,9 +12,20 @@ import api from '../utils/api';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 
+const stripMarkdown = (markdown: string) => {
+  if (!markdown) return "";
+  return markdown
+    .replace(/[#*`~>]/g, '') // Remove basic markdown chars
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Replace links with text
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '') // Remove images
+    .replace(/\n+/g, ' ') // Replace newlines with spaces
+    .trim()
+    .substring(0, 160); // Limit to 160 chars
+};
+
 const PostDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { user, token } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   
   const [post, setPost] = useState<Post | null>(null);
@@ -26,13 +37,12 @@ const PostDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<Comment | null>(null);
 
-  useTitle(post ? `${post.title} - 动态详情` : '动态详情 - KukeMC');
-
   useEffect(() => {
+    if (authLoading) return;
     if (id) {
       fetchPostAndComments(id);
     }
-  }, [id, token]);
+  }, [id, token, authLoading]);
 
   const fetchPostAndComments = async (postId: string) => {
     setLoading(true);
@@ -140,6 +150,20 @@ const PostDetail = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      {post ? (
+        <SEO 
+          title={`${post.title} - 动态详情`}
+          description={stripMarkdown(post.content)}
+          image={post.images && post.images.length > 0 ? post.images[0] : undefined}
+          author={post.author.nickname || post.author.username}
+          publishedTime={post.created_at}
+          modifiedTime={post.updated_at}
+          type="article"
+          url={`/post/${post.id}`}
+        />
+      ) : (
+        <SEO title="动态详情 - KukeMC" />
+      )}
       <div className="max-w-3xl mx-auto">
         <button 
           onClick={() => navigate(-1)}

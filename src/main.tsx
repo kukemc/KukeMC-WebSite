@@ -6,14 +6,18 @@ import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
 
+import { HelmetProvider } from 'react-helmet-async'
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <ThemeProvider defaultTheme="system" storageKey="kukemc-theme">
-          <App />
-        </ThemeProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <ThemeProvider defaultTheme="system" storageKey="kukemc-theme">
+            <App />
+          </ThemeProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   </React.StrictMode>,
 )

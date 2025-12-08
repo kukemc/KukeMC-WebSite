@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { AnimatePresence } from 'framer-motion';
 import { Plus, Flame, Clock, Search, Loader2, Hash, X } from 'lucide-react';
 import { Post } from '../types/activity';
@@ -10,8 +10,6 @@ import clsx from 'clsx';
 import { useSearchParams } from 'react-router-dom';
 
 const Activity = () => {
-  useTitle('动态广场 - KukeMC');
-  
   const [searchParams, setSearchParams] = useSearchParams();
   const tagParam = searchParams.get('tag');
   
@@ -103,6 +101,11 @@ const Activity = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+      <SEO 
+        title="动态广场 - KukeMC" 
+        description="KukeMC 玩家动态广场，分享你的游戏瞬间，参与热门话题讨论。"
+        url="/activity"
+      />
       <div className="max-w-5xl mx-auto">
         
         {/* Header Section */}

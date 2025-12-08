@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Ban, ChevronLeft, ChevronRight, Terminal, Clock, Timer } from 'lucide-react';
@@ -27,7 +27,6 @@ interface BanListResponse {
 }
 
 const BanList = () => {
-  useTitle('封禁列表-KukeMC-我的世界服务器(Minecraft)');
   const [data, setData] = useState<BanListResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -150,8 +149,9 @@ const BanList = () => {
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <SEO title="封禁列表 - KukeMC" description="服务器违规玩家公示及封禁记录查询。" url="/bans" />
+      <div className="max-w-7xl mx-auto space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

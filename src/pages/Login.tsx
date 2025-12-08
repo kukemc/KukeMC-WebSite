@@ -5,10 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 
 const Login = () => {
-  useTitle('玩家登录');
   const navigate = useNavigate();
   const location = useLocation();
   const { login, user } = useAuth();
@@ -100,6 +99,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
+      <SEO title="玩家登录" description="登录 KukeMC 官网，管理您的个人资料和查看游戏数据。" url="/login" />
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[100px]" />

@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { Activity } from 'lucide-react';
 
 const Monitor = () => {
-  useTitle('玩家数据 - KukeMC我的世界服务器');
   return (
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+      <SEO title="监控面板" description="实时查看 KukeMC 服务器性能与在线状态。" url="/monitor" />
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

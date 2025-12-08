@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Users, Server as ServerIcon, RefreshCw, Wifi, WifiOff, Zap } from 'lucide-react';
 import clsx from 'clsx';
@@ -19,7 +19,6 @@ interface PlayerListResponse {
 }
 
 const PlayerList = () => {
-  useTitle('在线玩家 - KukeMC');
   const [data, setData] = useState<PlayerListResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -81,7 +80,8 @@ const PlayerList = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden pt-24">
+      <SEO title="在线玩家" description="查看 KukeMC 服务器实时在线玩家列表。" url="/players" />
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-brand-500/10 blur-3xl dark:bg-brand-500/5 mix-blend-multiply dark:mix-blend-screen animate-blob" />

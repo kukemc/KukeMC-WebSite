@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../utils/api';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import { 
@@ -112,7 +112,6 @@ const getWsUrl = (path: string) => {
 };
 
 const TicketCenter = () => {
-  useTitle('工单中心 - KukeMC');
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -462,6 +461,7 @@ const TicketCenter = () => {
 
   return (
     <div className="min-h-screen pt-24 px-4 sm:px-6 lg:px-8 pb-12">
+      <SEO title="工单中心" description="提交问题反馈，举报违规行为，联系管理团队。" url="/tickets" />
       <div className="max-w-7xl mx-auto">
         
         {/* Header */}

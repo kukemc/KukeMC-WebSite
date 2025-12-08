@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion } from 'framer-motion';
 import { Search, Trophy, Clock, Calendar, User, BarChart2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, RefreshCw, Medal } from 'lucide-react';
 import clsx from 'clsx';
@@ -33,7 +33,6 @@ interface RankingResponse {
 }
 
 const Stats = () => {
-  useTitle('游玩时间-KukeMC-我的世界服务器(Minecraft)');
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [ranking, setRanking] = useState<RankingResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -104,8 +103,9 @@ const Stats = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <SEO title="数据统计 - KukeMC" description="查看服务器玩家在线时长、活跃度排名等统计数据。" url="/stats" />
+      <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500">
             数据统计

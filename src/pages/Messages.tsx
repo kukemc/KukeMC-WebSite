@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Trash2, Reply, AlertCircle, Loader2, Send, X, User as UserIcon } from 'lucide-react';
 import clsx from 'clsx';
@@ -240,8 +240,7 @@ const MessageCard = ({
 };
 
 const Messages = () => {
-  useTitle('玩家留言-KukeMC-我的世界服务器(Minecraft)');
-  const { user, token } = useAuth();
+  const { user, token, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -260,13 +259,15 @@ const Messages = () => {
   const [isReplying, setIsReplying] = useState(false);
 
   useEffect(() => {
+    if (authLoading) return;
+
     const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
     if (storedKey) {
       setAdminKey(storedKey);
       setIsAdmin(true);
     }
     fetchMessages();
-  }, []);
+  }, [authLoading, token]);
 
   const fetchMessages = async () => {
     try {
@@ -403,6 +404,7 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <SEO title="留言板 - KukeMC" description="KukeMC 服务器留言板，玩家可以在这里畅所欲言。" url="/messages" />
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">

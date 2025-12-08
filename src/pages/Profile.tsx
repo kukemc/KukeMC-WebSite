@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import api, { generateUploadHeaders } from '../utils/api';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, Clock, MessageSquare, 
@@ -13,6 +13,8 @@ import {
 import clsx from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
+import MentionInput from '../components/MentionInput';
+import ConfirmModal from '../components/ConfirmModal';
 import { getPosts } from '../services/activity';
 import { followUser, unfollowUser, getFollowStats } from '../services/follow';
 import { Post, FollowStats } from '../types/activity';
@@ -199,7 +201,7 @@ const MessageCard = ({
               className="overflow-hidden mt-4 pl-14 sm:pl-16"
             >
               <form onSubmit={(e) => handleReply(e, msg.id)} className="group bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500 transition-all">
-                <textarea
+                <MentionInput
                   value={replyContent}
                   onChange={(e) => setReplyContent(e.target.value)}
                   placeholder={`回复 @${msg.player}...`}
@@ -370,8 +372,8 @@ const getThumbnailUrl = (url: string) => {
 const Profile = () => {
   const { username } = useParams<{ username: string }>();
   const location = useLocation();
-  useTitle(`${username} 的个人主页 - KukeMC`);
-  const { user, token } = useAuth();
+  
+  const { user, token, loading: authLoading } = useAuth();
   
   const [details, setDetails] = useState<PlayerDetails | null>(null);
   const [loading, setLoading] = useState(true);
@@ -405,6 +407,21 @@ const Profile = () => {
     newTag: ''
   });
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Confirm Modal State
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+    isDangerous?: boolean;
+  }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: () => {},
+    isDangerous: false
+  });
 
   // Album State
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -443,20 +460,29 @@ const Profile = () => {
   });
 
 
+  // Fetch public details that don't require auth or don't change with auth
   useEffect(() => {
+    if (username) {
+      fetchDetails(username);
+    }
+  }, [username]);
+
+  // Fetch data that depends on user authentication (likes, follow status, etc.)
+  useEffect(() => {
+    if (authLoading) return; // Wait for auth to initialize
+
     const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
     if (storedKey) {
       setAdminKey(storedKey);
       setIsAdmin(true);
     }
     if (username) {
-      fetchDetails(username);
       fetchMessages(username);
       fetchProfile(username);
       fetchAlbums(username);
       fetchFollowStatsData(username);
     }
-  }, [username, token]); // Removed activeTab dependency
+  }, [username, token, authLoading]); // Removed activeTab dependency
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -519,8 +545,12 @@ const Profile = () => {
     setShowUserList(type);
     setUserList([]); // Reset list before fetching
     try {
-      const res = await api.get<{ username: string; nickname?: string }[]>(`/api/social/${type}/${username}`);
-      setUserList(res.data);
+      const res = await api.get<any>(`/api/social/${type}/${username}`);
+      if (Array.isArray(res.data)) {
+        setUserList(res.data);
+      } else if (res.data.data && Array.isArray(res.data.data)) {
+        setUserList(res.data.data);
+      }
     } catch (error) {
       console.error(error);
       // Fallback/Mock data if API fails or not implemented yet
@@ -793,17 +823,24 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteAlbum = async (albumId: number) => {
-    if (!confirm('确定要删除这张图片吗？')) return;
-    try {
-      await api.delete(`/api/album/${albumId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (selectedAlbum?.id === albumId) setSelectedAlbum(null);
-      setAlbums(prev => prev.filter(a => a.id !== albumId));
-    } catch (err: any) {
-      alert(err.response?.data?.detail || '删除失败');
-    }
+  const handleDeleteAlbum = (albumId: number) => {
+    setConfirmModal({
+      isOpen: true,
+      title: '删除照片',
+      message: '确定要删除这张照片吗？此操作无法撤销。',
+      isDangerous: true,
+      onConfirm: async () => {
+        try {
+          await api.delete(`/api/album/${albumId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (selectedAlbum?.id === albumId) setSelectedAlbum(null);
+          setAlbums(prev => prev.filter(a => a.id !== albumId));
+        } catch (err: any) {
+          alert(err.response?.data?.detail || '删除失败');
+        }
+      }
+    });
   };
 
   const fetchProfile = async (name: string) => {
@@ -1018,18 +1055,30 @@ const Profile = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('确定要删除这条留言吗？')) return;
-    if (!adminKey) return;
+  const handleDelete = (id: number) => {
+    setConfirmModal({
+      isOpen: true,
+      title: '删除留言',
+      message: '确定要删除这条留言吗？此操作无法撤销。',
+      isDangerous: true,
+      onConfirm: async () => {
+        const authHeader = adminKey ? `Bearer ${adminKey}` : (token ? `Bearer ${token}` : null);
+        
+        if (!authHeader) {
+          alert('无权删除');
+          return;
+        }
 
-    try {
-      await api.delete(`/api/message/${id}`, {
-        headers: { 'Authorization': `Bearer ${adminKey}` }
-      });
-      if (username) fetchMessages(username);
-    } catch (err: any) {
-      alert('删除失败: ' + (err.response?.data?.error || err.message));
-    }
+        try {
+          await api.delete(`/api/message/${id}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (username) fetchMessages(username);
+        } catch (err: any) {
+          alert('删除失败: ' + (err.response?.data?.error || err.message));
+        }
+      }
+    });
   };
 
   const handlePostUpdate = (updatedPost: Post) => {
@@ -1182,6 +1231,13 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 pt-24">
+      <SEO
+         title={`${username} 的个人主页 - KukeMC`}
+         description={profile?.bio || profile?.signature || `${username} 在 KukeMC 的个人主页，查看他们的游戏统计、动态和相册。`}
+         image={`https://cravatar.eu/helmavatar/${username}/256.png`}
+         type="profile"
+         url={`/player/${username}`}
+      />
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* Header Profile Card */}
@@ -1663,7 +1719,7 @@ const Profile = () => {
                             {user ? (
                                 <div className="bg-slate-50 dark:bg-slate-950/50 p-4 rounded-xl border border-slate-200 dark:border-slate-800 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
                                     <form onSubmit={handlePost}>
-                                        <textarea
+                                        <MentionInput
                                             value={postContent}
                                             onChange={(e) => setPostContent(e.target.value)}
                                             placeholder={`给 ${details.username} 留言...`}
@@ -2043,6 +2099,16 @@ const Profile = () => {
         </div>
 
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        isDangerous={confirmModal.isDangerous}
+      />
 
       {/* User List Modal */}
       <UserListModal 

@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Check, Copy, RefreshCw, AlertCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 import api, { generateUploadHeaders } from '../utils/api';
 
 const Skin = () => {
-  useTitle('皮肤上传-KukeMC-我的世界服务器(Minecraft)');
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -99,7 +98,8 @@ const Skin = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <SEO title="皮肤上传" description="上传您的 Minecraft 皮肤到 KukeMC 服务器。" url="/skin" />
+      <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

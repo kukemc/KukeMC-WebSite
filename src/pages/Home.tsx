@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Copy, Check, ArrowRight, Gamepad2, Shield, Heart, Zap, Users, Calendar, Trophy, Camera, MessageSquare, ExternalLink, X, ZoomIn, ChevronLeft, ChevronRight, Box, Pickaxe, Sword, Leaf, Sun, FlaskConical, BedDouble, Cog, Skull, Infinity, Layers, Search, Ghost } from 'lucide-react';
 import clsx from 'clsx';
@@ -243,8 +243,6 @@ const contentVariants = {
 };
 
 const Home = () => {
-  useTitle('KukeMC-我的世界服务器(Minecraft)');
-
   const [copied, setCopied] = useState(false);
   const [copiedServer, setCopiedServer] = useState<string | null>(null);
   const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: '' });
@@ -326,6 +324,11 @@ const Home = () => {
 
   return (
     <div className="overflow-hidden">
+      <SEO 
+        title="KukeMC-我的世界服务器(Minecraft)" 
+        description="一群热爱游戏的方块人组成的多玩法群组服。提供生存、小游戏、粘液科技等多种玩法。"
+        url="/"
+      />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}

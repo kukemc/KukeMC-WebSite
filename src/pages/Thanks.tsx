@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { Heart, ExternalLink, Calendar, MessageCircle, Zap, Sparkles, Star, Loader2, AlertCircle } from 'lucide-react';
 import api from '../utils/api';
 
@@ -48,7 +48,6 @@ const item = {
 };
 
 const Thanks = () => {
-  useTitle('特别鸣谢-KukeMC-我的世界服务器(Minecraft)');
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +91,7 @@ const Thanks = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 transition-colors duration-300">
+      <SEO title="特别鸣谢" description="感谢所有支持 KukeMC 服务器发展的玩家和赞助者。" url="/thanks" />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

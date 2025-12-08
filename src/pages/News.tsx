@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useTitle } from '../hooks/useTitle';
+import SEO from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -25,7 +25,6 @@ interface ChangelogItem {
 }
 
 const News = () => {
-  useTitle('资讯中心-KukeMC-我的世界服务器(Minecraft)');
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'news' | 'changelog'>(
@@ -85,6 +84,7 @@ const News = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <SEO title="资讯中心 - KukeMC" description="了解服务器最新动态、活动信息与开发进程" url="/news" />
       <div className="max-w-4xl mx-auto">
         {/* Header & Tabs */}
         <motion.div
