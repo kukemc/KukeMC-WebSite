@@ -740,7 +740,7 @@ const TicketCenter = () => {
                            isSameUser ? "invisible" : ""
                          )}>
                            <img 
-                                src={`https://minotar.net/helm/${log.actor}/32`} 
+                                src={`https://cravatar.eu/helmavatar/${log.actor}/32.png`} 
                                 alt={log.actor}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
@@ -777,7 +777,7 @@ const TicketCenter = () => {
                   {typingUser && (
                       <div className="flex gap-3 w-full mt-4">
                            <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 overflow-hidden shadow-sm bg-slate-200">
-                                <img src={`https://minotar.net/helm/${typingUser}/32`} className="w-full h-full" />
+                                <img src={`https://cravatar.eu/helmavatar/${typingUser}/32.png`} className="w-full h-full" />
                            </div>
                            <div className="flex flex-col items-start">
                                 <div className="text-xs text-slate-500 mb-1 ml-1 font-medium">{typingUser}</div>

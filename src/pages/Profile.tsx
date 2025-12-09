@@ -8,15 +8,20 @@ import {
   AlertCircle, Loader2, Send, Shield, 
   Hash, Activity, CalendarDays,
   Reply, Trash2, X, Heart, Edit2, Plus, AlertTriangle, ThumbsUp, Image as ImageIcon, Upload, MessageCircle,
-  UserPlus, UserMinus, Bookmark, Users, ChevronRight, Ban
+  UserPlus, UserMinus, Bookmark, Users, ChevronRight, Ban,
+  Star
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useAuth } from '../context/AuthContext';
 import PostCard from '../components/PostCard';
 import MentionInput from '../components/MentionInput';
 import ConfirmModal from '../components/ConfirmModal';
+import ModalPortal from '../components/ModalPortal';
 import { getPosts } from '../services/activity';
 import { followUser, unfollowUser, getFollowStats } from '../services/follow';
+import { getLevelColor } from '../utils/levelUtils';
+import { useCurrentUserLevel } from '../hooks/useCurrentUserLevel';
+
 import { Post, FollowStats } from '../types/activity';
 
 interface UserProfile {
@@ -29,6 +34,20 @@ interface UserProfile {
   is_liked: boolean;
   likers: string[];
   custom_title?: string;
+}
+
+interface LevelInfo {
+  username: string;
+  level: number;
+  current_xp: number;
+  next_level_xp: number;
+  level_start_xp: number;
+  rank: number;
+  progress: {
+    current: number;
+    max: number;
+    start: number;
+  };
 }
 
 interface Album {
@@ -376,6 +395,7 @@ const Profile = () => {
   const { user, token, loading: authLoading } = useAuth();
   
   const [details, setDetails] = useState<PlayerDetails | null>(null);
+  const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -437,6 +457,7 @@ const Profile = () => {
   // const [collectionFilter, setCollectionFilter] = useState<'posts' | 'albums'>('posts'); // unused but kept for future logic
   // const [collectionFilter, setCollectionFilter] = useState<'posts' | 'albums'>('posts');
   const [collectedAlbums, setCollectedAlbums] = useState<Album[]>([]);
+  const { level: currentUserLevel } = useCurrentUserLevel();
   const [uploadForm, setUploadForm] = useState({
     title: '',
     description: '',
@@ -464,6 +485,7 @@ const Profile = () => {
   useEffect(() => {
     if (username) {
       fetchDetails(username);
+      fetchLevelInfo(username);
     }
   }, [username]);
 
@@ -795,6 +817,11 @@ const Profile = () => {
   const handleAlbumComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAlbum || !newComment.trim()) return;
+
+    if (currentUserLevel !== null && currentUserLevel < 5) {
+      alert('您的等级不足 5 级，无法评论。请前往游戏内升级！');
+      return;
+    }
     
     setIsSendingComment(true);
     try {
@@ -925,6 +952,15 @@ const Profile = () => {
     }
   };
 
+  const fetchLevelInfo = async (name: string) => {
+    try {
+      const res = await api.get<LevelInfo>('/api/level/my-info', { params: { username: name } });
+      setLevelInfo(res.data);
+    } catch (err) {
+      console.error('Failed to fetch level info', err);
+    }
+  };
+
   const fetchDetails = async (name: string) => {
     setLoading(true);
     try {
@@ -1011,6 +1047,11 @@ const Profile = () => {
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!postContent.trim() || !user || !username) return;
+
+    if (currentUserLevel !== null && currentUserLevel < 5) {
+      alert('您的等级不足 5 级，无法发布留言。请前往游戏内升级！');
+      return;
+    }
 
     setIsPosting(true);
     try {
@@ -1291,7 +1332,15 @@ const Profile = () => {
             <div className="flex-1 text-center md:text-left mb-2 self-center md:self-end flex flex-col md:flex-row md:items-end justify-between w-full">
               <div className="flex-1">
                 <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
-                <h1 className="text-4xl font-bold text-slate-900 dark:text-white">{details.username}</h1>
+                <h1 className="text-4xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                  {details.username}
+                  {levelInfo && (
+                    <span className={`px-3 py-1 rounded-lg border ${getLevelColor(levelInfo.level).bg} ${getLevelColor(levelInfo.level).border} flex items-center gap-1.5`}>
+                      <Star size={16} className={getLevelColor(levelInfo.level).icon} />
+                      <span className={`text-sm font-bold ${getLevelColor(levelInfo.level).icon}`}>Lv.{levelInfo.level}</span>
+                    </span>
+                  )}
+                </h1>
                 
                 <div className="flex items-center gap-3">
                   {/* Like Button */}
@@ -1510,6 +1559,8 @@ const Profile = () => {
              >
                {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+
 
                 <div className="bg-white/80 dark:bg-slate-900/50 backdrop-blur-md p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-purple-500/30 transition-colors group">
                   <div className="flex items-center gap-4 mb-4">
@@ -2120,6 +2171,7 @@ const Profile = () => {
       />
 
       {/* Edit Profile Modal */}
+      <ModalPortal>
       <AnimatePresence>
         {showEditModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -2278,6 +2330,8 @@ const Profile = () => {
           </div>
         )}
       </AnimatePresence>
+      </ModalPortal>
+
 
       {/* Upload Modal */}
       <AnimatePresence>

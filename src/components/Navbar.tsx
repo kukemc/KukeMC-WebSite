@@ -9,6 +9,7 @@ import {
   BarChart3, 
   Map as MapIcon,
   MessageSquare,
+  MessageCircle,
   Shirt,
   Megaphone,
   Activity,
@@ -19,7 +20,8 @@ import {
   ChevronDown,
   ExternalLink,
   Ticket,
-  Compass
+  Compass,
+  LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
@@ -129,6 +131,8 @@ const Navbar = () => {
   const primaryLinks: NavLinkItem[] = [
     { name: '首页', path: '/', icon: Home },
     { name: '动态', path: '/activity', icon: Compass },
+    { name: '聊天', path: '/chat', icon: MessageCircle },
+    { name: '任务', path: '/dashboard', icon: LayoutDashboard },
     { name: '公告', path: '/news', icon: Megaphone, relatedPaths: ['/changelog'] },
     { name: '玩家', path: '/players', icon: Users },
     { name: '封禁', path: '/bans', icon: Ban },
@@ -156,7 +160,7 @@ const Navbar = () => {
   return (
     <nav
       className={clsx(
-        'fixed top-0 w-full z-[999] transition-all duration-300 border-b border-transparent',
+        'fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent',
         scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-slate-200/50 dark:border-slate-800/50 py-2 shadow-sm' : 'bg-transparent py-4'
       )}
     >

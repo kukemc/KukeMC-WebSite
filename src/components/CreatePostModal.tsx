@@ -5,6 +5,9 @@ import MarkdownEditor from './MarkdownEditor';
 import { createPost, updatePost, getHotTopics } from '../services/activity';
 import { updateAlbum } from '../services/album';
 import { Post } from '../types/activity';
+import ModalPortal from './ModalPortal';
+import { useCurrentUserLevel } from '../hooks/useCurrentUserLevel';
+
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -14,6 +17,7 @@ interface CreatePostModalProps {
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSuccess, post }) => {
+  const { level: currentUserLevel } = useCurrentUserLevel();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   
@@ -109,6 +113,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
     e.preventDefault();
     if (!title.trim() || !content.trim()) return;
 
+    if (currentUserLevel !== null && currentUserLevel < 5) {
+      alert('您的等级不足 5 级，无法发布动态。请前往游戏内升级！');
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
     try {
@@ -167,6 +176,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
     : '发布动态';
 
   return (
+    <ModalPortal>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -341,6 +351,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onSu
         </>
       )}
     </AnimatePresence>
+    </ModalPortal>
   );
 };
 

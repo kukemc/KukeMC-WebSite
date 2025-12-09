@@ -13,6 +13,8 @@ interface ConfirmModalProps {
   isDangerous?: boolean;
 }
 
+import ModalPortal from './ModalPortal';
+
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isOpen,
   onClose,
@@ -24,6 +26,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isDangerous = false
 }) => {
   return (
+    <ModalPortal>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -92,6 +95,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         </>
       )}
     </AnimatePresence>
+    </ModalPortal>
   );
 };
 

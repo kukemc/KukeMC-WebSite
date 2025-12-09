@@ -15,7 +15,9 @@ import News from './pages/News';
 import Monitor from './pages/Monitor';
 import Thanks from './pages/Thanks';
 import Login from './pages/Login';
+import UserLevelDashboard from './pages/UserLevelDashboard';
 import NotFound from './pages/NotFound';
+import LiveChat from './pages/LiveChat';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="chat" element={<LiveChat />} />
+          <Route path="dashboard" element={<UserLevelDashboard />} />
           <Route path="news" element={<News />} />
           <Route path="changelog" element={<News />} />
           <Route path="players" element={<PlayerList />} />

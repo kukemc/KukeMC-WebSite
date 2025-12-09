@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft, MessageSquare, Send, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useCurrentUserLevel } from '../hooks/useCurrentUserLevel';
 import SEO from '../components/SEO';
 import { Post, Comment } from '../types/activity';
 import PostCard from '../components/PostCard';
@@ -26,6 +27,7 @@ const stripMarkdown = (markdown: string) => {
 const PostDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { user, token, loading: authLoading } = useAuth();
+  const { level: currentUserLevel } = useCurrentUserLevel();
   const navigate = useNavigate();
   
   const [post, setPost] = useState<Post | null>(null);
@@ -97,6 +99,11 @@ const PostDetail = () => {
     e.preventDefault();
     if (!commentContent.trim() || !post) return;
 
+    if (currentUserLevel !== null && currentUserLevel < 5) {
+      alert('您的等级不足 5 级，无法评论。请前往游戏内升级！');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await api.post(`/api/posts/${post.id}/comments`, {
@@ -151,22 +158,23 @@ const PostDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-      {post ? (
-        <SEO 
-          title={`${post.title} - 动态详情`}
-          description={stripMarkdown(post.content)}
-          image={post.images && post.images.length > 0 ? post.images[0] : undefined}
-          author={post.author.nickname || post.author.username}
-          publishedTime={post.created_at}
-          modifiedTime={post.updated_at}
-          type="article"
-          url={`/post/${post.id}`}
-        />
-      ) : (
-        <SEO title="动态详情 - KukeMC" />
-      )}
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="relative z-10">
+        {post ? (
+          <SEO 
+            title={`${post.title} - 动态详情`}
+            description={stripMarkdown(post.content)}
+            image={post.images && post.images.length > 0 ? post.images[0] : undefined}
+            author={post.author.nickname || post.author.username}
+            publishedTime={post.created_at}
+            modifiedTime={post.updated_at}
+            type="article"
+            url={`/post/${post.id}`}
+          />
+        ) : (
+          <SEO title="动态详情 - KukeMC" />
+        )}
+        <div className="max-w-3xl mx-auto">
         <button 
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white mb-6 transition-colors"
@@ -251,6 +259,7 @@ const PostDetail = () => {
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
