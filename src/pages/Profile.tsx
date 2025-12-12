@@ -441,6 +441,7 @@ const Profile = () => {
   // Music Player State
   const [musicMeta, setMusicMeta] = useState<MusicMeta | null>(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -450,6 +451,7 @@ const Profile = () => {
        setMusicMeta(null);
        setProgress(0);
        setIsPlaying(true);
+       setAutoplayBlocked(false);
        
        api.get(`/api/profile/music/${profile.music_id}`)
          .then(res => {
@@ -458,6 +460,28 @@ const Profile = () => {
          .catch(err => console.error(err));
     }
   }, [profile?.music_id]);
+
+  useEffect(() => {
+     // Try to autoplay when music_id changes
+     if (profile?.music_id && audioRef.current) {
+         const audio = audioRef.current;
+         audio.volume = 0.5; // Set reasonable default volume
+         
+         const attemptPlay = async () => {
+             try {
+                 await audio.play();
+                 setIsPlaying(true);
+                 setAutoplayBlocked(false);
+             } catch (error) {
+                 console.log("Autoplay blocked:", error);
+                 setIsPlaying(false);
+                 setAutoplayBlocked(true);
+             }
+         };
+         
+         attemptPlay();
+     }
+   }, [profile?.music_id]);
   
   // Confirm Modal State
   const [confirmModal, setConfirmModal] = useState<{
@@ -2835,7 +2859,7 @@ const Profile = () => {
                  <audio 
                     ref={audioRef}
                     src={`http://music.163.com/song/media/outer/url?id=${profile.music_id}.mp3`} 
-                    autoPlay 
+                    autoPlay
                     loop
                     onTimeUpdate={() => {
                         if (audioRef.current) {
@@ -2848,6 +2872,15 @@ const Profile = () => {
                     onPause={() => setIsPlaying(false)}
                     className="hidden"
                  />
+              </div>
+              
+              {/* Tooltip */}
+              <div className={clsx(
+                  "absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs py-1 px-2 rounded transition-opacity whitespace-nowrap pointer-events-none z-50",
+                  autoplayBlocked ? "opacity-100 animate-bounce" : "opacity-0 group-hover:opacity-100"
+              )}>
+                 {autoplayBlocked ? "点击播放背景音乐" : "正在播放用户设置的背景音乐"}
+                 <div className="absolute bottom-[-4px] left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-900"></div>
               </div>
             </div>
           </motion.div>
