@@ -104,12 +104,7 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
               <li>
                 <a href="https://sipc.ink/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
-                  SIPC的个人主页
-                </a>
-              </li>
-              <li>
-                <a href="https://lyrify.cloud/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
-                  lyrify
+                  sipc.ink
                 </a>
               </li>
               <li>
