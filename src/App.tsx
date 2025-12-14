@@ -1,4 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useToast } from './context/ToastContext';
+import { AUTH_ERROR_EVENT } from './utils/api';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
@@ -12,6 +15,7 @@ import Skin from './pages/Skin';
 import Profile from './pages/Profile';
 import TicketCenter from './pages/Tickets';
 import News from './pages/News';
+import NewsDetail from './pages/NewsDetail';
 import Monitor from './pages/Monitor';
 import Thanks from './pages/Thanks';
 import Login from './pages/Login';
@@ -23,6 +27,17 @@ import LiveChat from './pages/LiveChat';
 import Settings from './pages/Settings';
 
 function App() {
+  const { error } = useToast();
+
+  useEffect(() => {
+    const handleAuthError = () => {
+      error('登录已过期，请重新登录');
+    };
+
+    window.addEventListener(AUTH_ERROR_EVENT, handleAuthError);
+    return () => window.removeEventListener(AUTH_ERROR_EVENT, handleAuthError);
+  }, [error]);
+
   return (
     <>
       <ScrollToTop />
@@ -33,12 +48,14 @@ function App() {
           <Route path="chat" element={<LiveChat />} />
           <Route path="dashboard" element={<UserLevelDashboard />} />
           <Route path="news" element={<News />} />
+          <Route path="news/:id" element={<NewsDetail />} />
           <Route path="changelog" element={<News />} />
           <Route path="players" element={<PlayerList />} />
           <Route path="bans" element={<BanList />} />
           <Route path="stats" element={<Stats />} />
           <Route path="activity" element={<Activity />} />
           <Route path="activity/:id" element={<PostDetail />} />
+          <Route path="album/:id" element={<PostDetail isAlbumRoute={true} />} />
           <Route path="consensus" element={<ConsensusPage />} />
           <Route path="consensus/:id" element={<ProposalDetail />} />
           <Route path="monitor" element={<Monitor />} />

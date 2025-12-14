@@ -172,7 +172,7 @@ const CheckInModal: React.FC<Props> = ({ isOpen, onClose, status, username, onCh
                         <span className="text-gray-500 dark:text-gray-400 font-medium">获得奖励</span>
                         <span className="text-xl font-bold text-orange-500">+{reward.xp} XP</span>
                      </div>
-                     {reward.bonus_xp && reward.bonus_xp > 0 && (
+                     {(reward.bonus_xp || 0) > 0 && (
                         <span className="text-xs text-orange-500 font-medium bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded-full">
                             含每日全服首签奖励 +{reward.bonus_xp} XP
                         </span>

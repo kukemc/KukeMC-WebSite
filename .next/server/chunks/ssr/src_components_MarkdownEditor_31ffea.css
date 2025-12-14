@@ -1,0 +1,129 @@
+/* [project]/src/components/MarkdownEditor.css [app-ssr] (css) */
+.vditor-toolbar__item svg {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+.vditor-tooltipped svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.vditor svg {
+  display: inline-block !important;
+  max-width: none !important;
+}
+
+.vditor-toolbar svg, .vditor-hint svg, .vditor-panel svg {
+  max-height: 100%;
+  width: auto !important;
+  height: auto !important;
+}
+
+.vditor-toolbar__item svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.vditor-copy {
+  align-items: center;
+  justify-content: center;
+  opacity: .6;
+  display: inline-flex !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+  background-color: #0000 !important;
+  transition: all .2s !important;
+}
+
+.vditor-copy:hover {
+  opacity: 1;
+  background-color: #0000000d !important;
+}
+
+.dark .vditor-copy:hover {
+  background-color: #ffffff1a !important;
+}
+
+.vditor-copy svg {
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+  color: inherit !important;
+}
+
+.vditor-toolbar__item {
+  align-items: center;
+  justify-content: center;
+  display: inline-flex !important;
+}
+
+.vditor-hint, .vditor-panel, .vditor-tip, .vditor-popover {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+.vditor-hint button, .vditor-panel button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 4px 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.vditor-hint button:hover, .vditor-panel button:hover {
+  background-color: #0000000d;
+}
+
+.dark .vditor-hint, .dark .vditor-panel, .dark .vditor-tip, .dark .vditor-popover {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f !important;
+}
+
+.dark .vditor-hint button:hover, .dark .vditor-panel button:hover {
+  background-color: #ffffff1a;
+}
+
+.vditor-hint__content, .vditor-panel__content {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vditor-toolbar__item .vditor-panel {
+  margin-top: 5px;
+}
+
+.vditor {
+  border: none !important;
+  border-radius: .75rem !important;
+}
+
+.vditor-toolbar {
+  border-top-left-radius: .75rem !important;
+  border-top-right-radius: .75rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background-color: #0000 !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.dark .vditor-toolbar {
+  border-bottom-color: #334155 !important;
+}
+
+.vditor-content {
+  border-bottom-left-radius: .75rem !important;
+  border-bottom-right-radius: .75rem !important;
+}
+
+/*# sourceMappingURL=src_components_MarkdownEditor_31ffea.css.map*/

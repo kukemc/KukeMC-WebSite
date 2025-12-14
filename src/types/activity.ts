@@ -31,6 +31,8 @@ export interface Comment {
   created_at: string;
   parent_id?: number; // For nested comments
   replies?: Comment[];
+  likes_count?: number;
+  is_liked?: boolean;
 }
 
 export interface CreatePostDTO {

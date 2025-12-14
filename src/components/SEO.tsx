@@ -11,6 +11,7 @@ interface SEOProps {
   publishedTime?: string;
   modifiedTime?: string;
   keywords?: string[];
+  structuredData?: any;
   children?: React.ReactNode;
 }
 
@@ -24,6 +25,7 @@ const SEO: React.FC<SEOProps> = ({
   publishedTime,
   modifiedTime,
   keywords = ["Minecraft", "我的世界", "KukeMC", "服务器", "生存", "小游戏"],
+  structuredData: externalStructuredData,
   children
 }) => {
   const siteUrl = import.meta.env.VITE_APP_URL || 'https://kuke.ink';
@@ -47,23 +49,24 @@ const SEO: React.FC<SEOProps> = ({
   }
 
   // Construct structured data
-  let structuredData: any = null;
+  let structuredData: any = externalStructuredData || null;
 
-  if (type === 'article') {
-    structuredData = {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": finalTitle,
-      "image": [image],
-      "datePublished": publishedTime,
-      "dateModified": modifiedTime || publishedTime,
-      "author": [{
-          "@type": "Person",
-          "name": author || siteName,
-          "url": author ? `${siteUrl}/player/${author}` : siteUrl
-      }]
-    };
-  } else if (type === 'profile') {
+  if (!structuredData) {
+    if (type === 'article') {
+      structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": finalTitle,
+        "image": [image],
+        "datePublished": publishedTime,
+        "dateModified": modifiedTime || publishedTime,
+        "author": [{
+            "@type": "Person",
+            "name": author || siteName,
+            "url": author ? `${siteUrl}/player/${author}` : siteUrl
+        }]
+      };
+    } else if (type === 'profile') {
       structuredData = {
           "@context": "https://schema.org",
           "@type": "ProfilePage",
@@ -79,6 +82,7 @@ const SEO: React.FC<SEOProps> = ({
               }]
           }
       };
+    }
   }
 
   return (

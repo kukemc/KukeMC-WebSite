@@ -4,10 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "vite:dev": "vite",
+    "vite:build": "tsc -b && vite build",
+    "vite:preview": "vite preview",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@types/canvas-confetti": "^1.9.0",
@@ -17,6 +21,7 @@
     "date-fns": "^4.1.0",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.469.0",
+    "next": "^14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",

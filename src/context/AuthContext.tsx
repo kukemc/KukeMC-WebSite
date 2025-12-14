@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { verifyToken } from '../utils/api';
 
 interface User {
   username: string;
@@ -21,19 +22,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true); // Initialize loading to true
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (storedToken && storedUser) {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Failed to parse stored user data:", e);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+      
+      if (storedToken && storedUser) {
+        try {
+          // Verify token validity with backend
+          const isValid = await verifyToken();
+          
+          if (isValid) {
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+          } else {
+            // Token is invalid or expired
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setUser(null);
+            setToken(null);
+          }
+        } catch (e) {
+          console.error("Failed to parse stored user data or verify token:", e);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          setUser(null);
+          setToken(null);
+        }
       }
-    }
-    setLoading(false); // Set loading to false after checking storage
+      setLoading(false);
+    };
+
+    initAuth();
   }, []);
 
   const login = (newUser: User, newToken: string) => {

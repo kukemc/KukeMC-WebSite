@@ -13,13 +13,13 @@ interface MentionInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaEle
   containerClassName?: string;
 }
 
-const MentionInput: React.FC<MentionInputProps> = ({ 
+const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputProps>(({ 
   value, 
   onChange, 
   className,
   containerClassName,
   ...props 
-}) => {
+}, ref) => {
   const [users, setUsers] = useState<User[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(0);
@@ -27,8 +27,28 @@ const MentionInput: React.FC<MentionInputProps> = ({
   const [query, setQuery] = useState('');
   const [mentionStart, setMentionStart] = useState(-1);
   
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const innerRef = useRef<HTMLTextAreaElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+
+  // Combine refs
+  useEffect(() => {
+    if (!ref) return;
+    if (typeof ref === 'function') {
+      ref(innerRef.current);
+    } else {
+      (ref as React.MutableRefObject<HTMLTextAreaElement | null>).current = innerRef.current;
+    }
+  }, [ref]);
+
+  useEffect(() => {
+    if (props.autoFocus && innerRef.current) {
+      // Small timeout to allow for transitions/animations to start
+      const timer = setTimeout(() => {
+        innerRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [props.autoFocus]);
 
   useEffect(() => {
     if (!showSuggestions) return;
@@ -123,10 +143,10 @@ const MentionInput: React.FC<MentionInputProps> = ({
     
     // Restore focus and cursor (simple approximation)
     setTimeout(() => {
-        if (textareaRef.current) {
-            textareaRef.current.focus();
+        if (innerRef.current) {
+            innerRef.current.focus();
             const newCursorPos = mentionStart + 1 + user.username.length + 1;
-            textareaRef.current.setSelectionRange(newCursorPos, newCursorPos);
+            innerRef.current.setSelectionRange(newCursorPos, newCursorPos);
         }
     }, 0);
   };
@@ -134,7 +154,7 @@ const MentionInput: React.FC<MentionInputProps> = ({
   return (
     <div className={`relative ${containerClassName || ''}`}>
       <textarea
-        ref={textareaRef}
+        ref={innerRef}
         value={value}
         onChange={handleInput}
         onKeyDown={handleKeyDown}
@@ -188,6 +208,6 @@ const MentionInput: React.FC<MentionInputProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default MentionInput;

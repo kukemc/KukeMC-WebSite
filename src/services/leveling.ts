@@ -25,6 +25,10 @@ export interface CheckInStatus {
     streak: number;
   };
   today_checkin_count: number;
+  today_first_checkin_user?: {
+    username: string;
+    level: number;
+  };
 }
 
 export interface Task {

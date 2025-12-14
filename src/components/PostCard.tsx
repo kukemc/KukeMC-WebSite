@@ -13,6 +13,7 @@ import { followUser, unfollowUser } from '../services/follow';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import CreatePostModal from './CreatePostModal';
+import CommentSection, { UIComment } from './CommentSection';
 import api from '../utils/api';
 import MentionInput from './MentionInput';
 import { useCurrentUserLevel } from '../hooks/useCurrentUserLevel';
@@ -65,19 +66,22 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
          const albumData = await getAlbum(post.id);
          const albumComments = Array.isArray(albumData.comments) ? albumData.comments : [];
          // Map flat album comments to Comment interface structure
-         rawComments = albumComments.map((c: any) => ({
-            id: c.id,
-            post_id: post.id,
-            content: c.content,
-            created_at: c.created_at,
-            author: {
-                username: c.username,
-                nickname: c.nickname,
-                custom_title: c.custom_title,
-                avatar: c.avatar
-            },
-            replies: []
-         }));
+         rawComments = albumComments.map((c: any) => {
+            const commentAuthor = c.author || c.user || c;
+            return {
+                id: c.id,
+                post_id: post.id,
+                content: c.content,
+                created_at: c.created_at,
+                author: {
+                    username: commentAuthor.username || 'User',
+                    nickname: commentAuthor.nickname || commentAuthor.username || 'User',
+                    custom_title: commentAuthor.custom_title,
+                    avatar: commentAuthor.avatar
+                },
+                replies: []
+            };
+         });
       } else {
          // Standard post comments logic
          const res = await api.get<Comment[]>(`/api/posts/${post.id}/comments`, config);
@@ -121,6 +125,36 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
     setIsExpanded(newExpandedState);
     if (newExpandedState) {
         fetchComments();
+    }
+  };
+
+  const handleNewCommentSubmit = async (content: string, parentId?: number) => {
+    if (!user) return;
+    if (currentUserLevel !== null && currentUserLevel < 5) {
+      warning('您的等级不足 5 级，无法评论。请前往游戏内升级！');
+      return;
+    }
+
+    try {
+        await api.post(`/api/posts/${post.id}/comments`, {
+            content: content,
+            parent_id: parentId
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        setComments([]); 
+        await fetchComments(true);
+        
+        if (onUpdate) {
+            onUpdate({
+                ...post,
+                comments_count: post.comments_count + 1
+            });
+        }
+    } catch (err: any) {
+      error(err.response?.data?.detail || '评论失败');
+      throw err;
     }
   };
 
@@ -367,14 +401,8 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
                <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-white">{post.title}</h3>
                
                {post.images && post.images.length > 0 && (
-                   <div className="rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 mb-4 cursor-pointer relative group" 
-                        onClick={() => {
-                            // Ideally open lightbox or navigate to user album
-                            // For now just prevent link click or maybe navigate to user profile
-                            // window.location.href = `/player/${post.author.username}?tab=albums`
-                            // Or use Link
-                        }}>
-                        <Link to={`/player/${post.author.username}?tab=albums`}>
+                   <div className="rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 mb-4 cursor-pointer relative group">
+                        <Link to={isDetail ? `/player/${post.author.username}?tab=albums` : `/album/${post.id}`}>
                           <img 
                             src={post.images[0]} 
                             alt={post.title} 
@@ -436,7 +464,8 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
                      <Link to={props.href || '#'} className="text-emerald-500 hover:underline" onClick={(e) => e.stopPropagation()}>
                        {props.children}
                      </Link>
-                   )
+                   ),
+                   img: () => null
                  }}
                >
                  {(isDetail || isExpanded) ? processedContent : processedContent.slice(0, 300) + (processedContent.length > 300 ? '...' : '')}
@@ -534,6 +563,7 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
+              {post.type === 'album' ? (
               <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-700">
                  {/* Input Area */}
                  {user ? (
@@ -598,6 +628,18 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
                    )}
                  </div>
               </div>
+              ) : (
+                <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-700">
+                  <CommentSection 
+                      comments={comments as unknown as UIComment[]}
+                      currentUser={user}
+                      onSubmit={handleNewCommentSubmit}
+                      loading={loadingComments}
+                      title="评论"
+                      className="!p-0 !bg-transparent !shadow-none !border-none"
+                  />
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
