@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, CheckCircle, Copy, Terminal, ArrowLeft, ShieldCheck, Server, User, Check } from 'lucide-react';
+import { Loader2, CheckCircle, Copy, Terminal, ArrowLeft, ShieldCheck, Server, User, Check, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 import api from '@/utils/api';
@@ -18,6 +18,8 @@ const LoginClient = () => {
   const [step, setStep] = useState<'input' | 'verify' | 'success'>('input');
   const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
+  const [hasBoundQQ, setHasBoundQQ] = useState(false);
+  const [maskedQQ, setMaskedQQ] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
@@ -54,6 +56,8 @@ const LoginClient = () => {
       const res = await api.post('/api/player-auth/init', { username });
       const newCode = res.data.code;
       setCode(newCode);
+      setHasBoundQQ(res.data.has_bound_qq || false);
+      setMaskedQQ(res.data.masked_qq || '');
       setStep('verify');
       // Start polling
       if (pollTimerRef.current) clearInterval(pollTimerRef.current);
@@ -267,6 +271,31 @@ const LoginClient = () => {
                         </span>
                       </div>
                     </div>
+
+                    {hasBoundQQ && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="mb-8 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="p-2 rounded-full bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300">
+                            <MessageCircle size={20} />
+                          </div>
+                          <div className="text-left">
+                            <h4 className="font-semibold text-slate-900 dark:text-white text-sm mb-1">
+                              QQ 群验证可用
+                            </h4>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                              检测到您绑定的 QQ ({maskedQQ})。
+                              <br />
+                              您也可以在 QQ 群中发送 <code className="px-1 py-0.5 rounded bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 font-mono">/login {code}</code> 进行验证。
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
 
                     <div className="flex flex-col items-center gap-4">
                       <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium animate-pulse">
