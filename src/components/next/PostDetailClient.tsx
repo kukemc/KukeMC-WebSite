@@ -72,7 +72,8 @@ const PostDetailClient = ({ initialPost, isAlbum = false }: { initialPost: Post,
                     username: commentAuthor.username || 'User',
                     nickname: commentAuthor.nickname || commentAuthor.username || 'User',
                     custom_title: commentAuthor.custom_title,
-                    avatar: commentAuthor.avatar
+                    avatar: commentAuthor.avatar,
+                    level: commentAuthor.level || 0
                 },
                 replies: []
             };
