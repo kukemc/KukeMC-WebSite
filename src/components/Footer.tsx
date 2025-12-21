@@ -1,5 +1,5 @@
 import { Github, Mail, Heart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -89,9 +89,9 @@ const Footer = () => {
                   KukeWiki 官方百科
                 </a>
               </li>
-              <li><Link to="/bans" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器封禁玩家列表</Link></li>
-              <li><Link to="/players" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器在线玩家</Link></li>
-              <li><Link to="/messages" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器玩家留言板</Link></li>
+              <li><Link href="/bans" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器封禁玩家列表</Link></li>
+              <li><Link href="/players" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器在线玩家</Link></li>
+              <li><Link href="/messages" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">服务器玩家留言板</Link></li>
             </ul>
           </div>
 
@@ -108,33 +108,39 @@ const Footer = () => {
                 </a>
               </li>
               <li>
+                <a href="https://bd6jzu.ink/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                  BD6JZU的主页
+                </a>
+              </li>
+              <li>
                 <a href="https://lyrify.cloud/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
                   lyrify
                 </a>
               </li>
               <li>
-                <a href="https://ccw.site" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
-                  共创世界
-                </a>
-              </li>
-              <li>
-                <a href="https://ccwl.appinnov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
-                  CCW launcher
+                <a href="https://www.minecraft.net/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors flex items-center gap-2">
+                  Minecraft
                 </a>
               </li>
             </ul>
           </div>
         </div>
-
-        <div className="border-t border-slate-200 dark:border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500 dark:text-slate-500">
-          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
-            <p>&copy; {currentYear} KukeMC Server. All rights reserved.</p>
-            <span className="hidden md:block text-slate-300 dark:text-slate-800">|</span>
-            <a href="https://icp.gov.moe/?keyword=20241120" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 dark:hover:text-slate-400 transition-colors cursor-pointer">萌ICP备20241120号</a>
+        
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="text-center md:text-left">
+            <p className="text-slate-500 dark:text-slate-500 text-sm">
+              &copy; {currentYear} KukeMC Server. All rights reserved.
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-600 mt-1">
+              Not affiliated with Mojang Studios.
+            </p>
           </div>
-          <p className="flex items-center gap-1">
-            Made with <Heart size={14} className="text-red-500 fill-red-500 animate-pulse" /> by KukeMC Team
-          </p>
+          
+          <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-600">
+            <span>Made with</span>
+            <Heart size={12} className="text-red-500 fill-current animate-pulse" />
+            <span>by KukeMC Team</span>
+          </div>
         </div>
       </div>
     </footer>
