@@ -334,7 +334,7 @@ const HomePage = () => {
             className="w-full h-full"
           >
             <img 
-              src="https://m.ccw.site/gandi_application/user_assets/e2978a6d51d9f4f7448569637310f02c.png" 
+              src="https://kukemc-test.cn-nb1.rains3.com/public/static/picture/hexo.webp" 
               alt="Background" 
               className="w-full h-full object-cover"
             />
