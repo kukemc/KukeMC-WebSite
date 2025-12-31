@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Check, MessageSquare, Heart, Image, AtSign, Star, UserPlus } from 'lucide-react';
+import { Bell, Check, MessageSquare, Heart, Image, AtSign, Star, UserPlus, Zap } from 'lucide-react';
 import { getNotifications, markAsRead, markAllAsRead, Notification } from '@/services/notification';
 import clsx from 'clsx';
 import { useAuth } from '@/context/AuthContext';
@@ -59,6 +59,7 @@ export const NotificationList = () => {
       case 'post_comment': return <MessageSquare className="text-blue-500" size={12} />;
       case 'post_collect': return <Star className="text-yellow-500" size={12} />;
       case 'follow': return <UserPlus className="text-indigo-500" size={12} />;
+      case 'system': return <Zap className="text-yellow-500" size={12} />;
       
       // Missing types that might be used
       case 'photo_collect': return <Star className="text-yellow-500" size={12} />;
@@ -90,6 +91,7 @@ export const NotificationList = () => {
       case 'post_comment': return '评论了你的动态';
       case 'post_collect': return '收藏了你的动态';
       case 'follow': return '关注了你';
+      case 'system': return '发来了系统通知';
 
       // Missing types
       case 'photo_collect': return '收藏了你的照片';
@@ -137,8 +139,11 @@ export const NotificationList = () => {
             
         case 'follow':
             return `/player/${n.sender_id}`;
+
+        case 'system':
+            return n.target_id || '#';
             
-        default: 
+        default:  
              // Fuzzy match
             if (n.type.includes('album') || n.type.includes('photo')) {
                 return `/player/${n.user_id}?tab=albums`;
@@ -227,12 +232,18 @@ export const NotificationList = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-slate-800 dark:text-slate-200 font-medium truncate">
-                            <span className="font-bold">{n.sender_id}</span>
-                            <span className="font-normal ml-1 text-slate-500 dark:text-slate-400">{getActionText(n.type)}</span>
+                            {n.title ? (
+                                <span className="font-bold">{n.title}</span>
+                            ) : (
+                                <>
+                                    <span className="font-bold">{n.sender_id}</span>
+                                    <span className="font-normal ml-1 text-slate-500 dark:text-slate-400">{getActionText(n.type)}</span>
+                                </>
+                            )}
                           </p>
-                          {n.content_preview && (
+                          {(n.content || n.content_preview) && (
                             <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                              {n.content_preview}
+                              {n.content || n.content_preview}
                             </p>
                           )}
                           <p className="text-[10px] text-slate-400 mt-1">

@@ -9,6 +9,8 @@ export interface Notification {
   is_read: boolean;
   created_at: string;
   content_preview?: string;
+  content?: string;
+  title?: string;
 }
 
 export const getNotifications = async () => {
