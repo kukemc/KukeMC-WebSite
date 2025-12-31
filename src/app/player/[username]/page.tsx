@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       openGraph: {
         title: `${username} 的个人主页 | KukeMC`,
         description: bio,
-        images: [`https://cravatar.eu/helmavatar/${username}/256.png`],
+        images: [`https://crafthead.net/helm/${username}/256`],
       },
     };
   } catch (e) {

@@ -93,12 +93,12 @@ const MessageCard = ({
           <Link href={`/player/${msg.player}`} className="relative flex-shrink-0">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-2 ring-slate-100 dark:ring-slate-700 shadow-sm group-hover:ring-emerald-400 dark:group-hover:ring-emerald-500 transition-all duration-300">
               <img
-                src={`https://cravatar.eu/helmavatar/${encodeURIComponent(msg.player)}/128.png`}
+                src={`https://crafthead.net/helm/${encodeURIComponent(msg.player)}/128`}
                 alt={msg.player}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://cravatar.eu/helmavatar/MHF_Steve/128.png';
+                  (e.target as HTMLImageElement).src = 'https://crafthead.net/helm/MHF_Steve/128';
                 }}
               />
             </div>
@@ -123,7 +123,7 @@ const MessageCard = ({
                       className="font-medium text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
                     >
                       <img 
-                        src={`https://cravatar.eu/helmavatar/${msg.recipient}/16.png`} 
+                        src={`https://crafthead.net/helm/${msg.recipient}/16`} 
                         className="w-4 h-4 rounded-sm" 
                         alt=""
                       />

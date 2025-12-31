@@ -191,7 +191,7 @@ const MentionInput = React.forwardRef<HTMLTextAreaElement, MentionInputProps>(({
                   }`}
                 >
                   <img 
-                    src={user.avatar || `https://cravatar.eu/helmavatar/${user.username}/16.png`} 
+                    src={user.avatar || `https://crafthead.net/helm/${user.username}/16`} 
                     alt={user.username} 
                     className="w-6 h-6 rounded-full mr-2" 
                   />

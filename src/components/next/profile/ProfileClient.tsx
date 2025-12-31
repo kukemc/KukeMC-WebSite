@@ -1465,7 +1465,7 @@ const ProfileClient = () => {
                             {profile.likers.map(liker => (
                               <Link href={`/player/${liker}`} key={liker} title={liker}>
                                 <img 
-                                  src={`https://cravatar.eu/helmavatar/${liker}/32.png`} 
+                                  src={`https://crafthead.net/helm/${liker}/32`} 
                                   className="w-8 h-8 rounded-md border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
                                   alt={liker}
                                 />

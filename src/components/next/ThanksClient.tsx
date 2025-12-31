@@ -61,19 +61,19 @@ const developers: Contributor[] = [
   {
     name: "kukemc",
     role: "全栈开发 / 插件开发",
-    avatar: "https://cravatar.eu/helmavatar/kukemc/128.png",
+    avatar: "https://crafthead.net/helm/kukemc/128",
     desc: "主导网站全栈架构与核心功能开发，负责服务器插件深度定制与系统对接，优化交互体验。"
   },
   {
     name: "0ctber",
     role: "运维 / 数据库",
-    avatar: "https://cravatar.eu/helmavatar/0ctber/128.png",
+    avatar: "https://crafthead.net/helm/0ctber/128",
     desc: "专注服务器高可用运维与数据库性能优化，保障系统稳定运行，提供安全可靠的游戏环境。"
   },
   {
     name: "sipc_ink",
     role: "服务器支持",
-    avatar: "https://cravatar.eu/helmavatar/sipc_ink/128.png",
+    avatar: "https://crafthead.net/helm/sipc_ink/128",
     desc: "提供了整个KukeMC游戏的服务器支持，为游戏世界的持续运行与稳定连接提供了坚实基础。"
   }
 ];
@@ -334,7 +334,7 @@ const ThanksClient = () => {
                          >
                              {[...Array(16)].map((_, i) => (
                                 <Link key={`c2-${i}`} href={`/player/${displayPlayers[(i + 5) % displayPlayers.length].username}`}>
-                                    <img src={`https://cravatar.eu/helmavatar/${displayPlayers[(i + 5) % displayPlayers.length].username}/128.png`} className="w-full aspect-square rounded-xl shadow-lg border border-white dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-110 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 cursor-pointer" alt="Player" />
+                                    <img src={`https://crafthead.net/helm/${displayPlayers[(i + 5) % displayPlayers.length].username}/128`} className="w-full aspect-square rounded-xl shadow-lg border border-white dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-110 hover:border-brand-400 transition-all duration-300 cursor-pointer" alt="Player" />
                                 </Link>
                              ))}
                          </motion.div>
@@ -347,7 +347,7 @@ const ThanksClient = () => {
                          >
                              {[...Array(16)].map((_, i) => (
                                 <Link key={`c3-${i}`} href={`/player/${displayPlayers[(i + 10) % displayPlayers.length].username}`}>
-                                    <img src={`https://cravatar.eu/helmavatar/${displayPlayers[(i + 10) % displayPlayers.length].username}/128.png`} className="w-full aspect-square rounded-xl shadow-lg border border-white dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-110 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 cursor-pointer" alt="Player" />
+                                    <img src={`https://crafthead.net/helm/${displayPlayers[(i + 10) % displayPlayers.length].username}/128`} className="w-full aspect-square rounded-xl shadow-lg border border-white dark:border-slate-700 bg-white dark:bg-slate-800 hover:scale-110 hover:border-brand-400 transition-all duration-300 cursor-pointer" alt="Player" />
                                 </Link>
                              ))}
                          </motion.div>

@@ -64,7 +64,7 @@ const Leaderboard: React.FC<Props> = ({ players, loading }) => {
                             
                             <div className="flex-shrink-0">
                                 <img 
-                                    src={`https://cravatar.eu/helmavatar/${player.username}/40.png`} 
+                                    src={`https://crafthead.net/helm/${player.username}/40`} 
                                     alt={player.username}
                                     className="w-10 h-10 rounded-lg shadow-sm"
                                 />

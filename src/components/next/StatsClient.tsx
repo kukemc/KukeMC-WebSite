@@ -250,10 +250,10 @@ const StatsClient = () => {
                           <div className="flex items-center gap-4">
                             <div className="relative">
                               <img
-                                src={`https://cravatar.eu/helmavatar/${player.username}/40.png`}
+                                src={`https://crafthead.net/helm/${player.username}/40`}
                                 alt={player.username}
                                 className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 shadow-sm group-hover:scale-110 transition-transform"
-                                onError={(e) => (e.target as HTMLImageElement).src = 'https://cravatar.eu/helmavatar/MHF_Steve/40.png'}
+                                onError={(e) => (e.target as HTMLImageElement).src = 'https://crafthead.net/helm/MHF_Steve/40'}
                               />
                               <div className={clsx("absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900",
                                 player.online ? "bg-green-500" : "bg-slate-400 dark:bg-slate-600"

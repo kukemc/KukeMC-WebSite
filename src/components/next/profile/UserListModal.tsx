@@ -61,7 +61,7 @@ const UserListModal = ({
                       >
                         <div className="relative">
                           <img 
-                            src={`https://cravatar.eu/helmavatar/${u.username}/48.png`} 
+                            src={`https://crafthead.net/helm/${u.username}/48`} 
                             alt={u.username}
                             className="w-12 h-12 rounded-xl shadow-sm group-hover:scale-105 transition-transform duration-300"
                           />

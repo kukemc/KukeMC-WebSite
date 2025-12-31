@@ -350,7 +350,7 @@ const Navbar = () => {
                       className="flex items-center gap-4 flex-1"
                     >
                       <img 
-                        src={`https://cravatar.eu/helmavatar/${user.username}/64.png`} 
+                        src={`https://crafthead.net/helm/${user.username}/64`} 
                         alt={user.username}
                         className="w-12 h-12 rounded-xl shadow-sm"
                       />

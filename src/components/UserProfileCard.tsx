@@ -178,7 +178,7 @@ export const UserProfileCard = ({ isOpen, onClose }: UserProfileCardProps) => {
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
                     <Link to={`/player/${user.username}`}>
                         <img 
-                            src={`https://cravatar.eu/helmavatar/${user.username}/128.png`} 
+                            src={`https://crafthead.net/helm/${user.username}/128`} 
                             alt={user.username}
                             className="w-24 h-24 rounded-full border-[5px] border-white dark:border-slate-900 relative z-10 bg-white dark:bg-slate-800 transition-transform duration-300 group-hover:scale-105 shadow-lg"
                         />
