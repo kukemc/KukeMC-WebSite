@@ -183,17 +183,6 @@ export const UserProfileCard = ({ isOpen, onClose }: UserProfileCardProps) => {
                             className="w-24 h-24 rounded-full border-[5px] border-white dark:border-slate-900 relative z-10 bg-white dark:bg-slate-800 transition-transform duration-300 group-hover:scale-105 shadow-lg"
                         />
                     </Link>
-                    {user.role === 'admin' && (
-                        <motion.div 
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.3, type: "spring" }}
-                          className="absolute bottom-1 right-1 bg-gradient-to-br from-yellow-300 to-yellow-500 text-yellow-900 p-1.5 rounded-full border-2 border-white dark:border-slate-900 z-20 shadow-sm" 
-                          title="管理员"
-                        >
-                            <Shield size={14} fill="currentColor" />
-                        </motion.div>
-                    )}
                 </motion.div>
               </div>
 

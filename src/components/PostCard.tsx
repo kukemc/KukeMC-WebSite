@@ -50,30 +50,6 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
     setIsEssence(post.is_essence || false);
   }, [post.is_top, post.is_essence]);
 
-  const isAdmin = user?.role === 'admin';
-
-  const handleToggleTop = async () => {
-      try {
-          const res = await toggleTopPost(post.id);
-          setIsTop(res.is_top);
-          if (onUpdate) onUpdate({ ...post, is_top: res.is_top });
-          success(res.is_top ? '已置顶' : '已取消置顶');
-      } catch (err) {
-          error('操作失败');
-      }
-  };
-
-  const handleToggleEssence = async () => {
-      try {
-          const res = await toggleEssencePost(post.id);
-          setIsEssence(res.is_essence);
-          if (onUpdate) onUpdate({ ...post, is_essence: res.is_essence });
-          success(res.is_essence ? '已设为精华' : '已取消精华');
-      } catch (err) {
-          error('操作失败');
-      }
-  };
-
   const [isFollowing, setIsFollowing] = useState(post.author.is_following);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
 

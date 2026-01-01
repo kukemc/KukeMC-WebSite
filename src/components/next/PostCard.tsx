@@ -46,7 +46,6 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
 
   const [isTop, setIsTop] = useState(post.is_top || false);
   const [isEssence, setIsEssence] = useState(post.is_essence || false);
-  const isAdmin = user?.role === 'admin';
 
   // Listen to post updates
   useEffect(() => {

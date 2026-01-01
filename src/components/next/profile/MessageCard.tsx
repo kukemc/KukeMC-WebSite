@@ -14,7 +14,6 @@ interface MessageCardProps {
   msg: any;
   depth?: number;
   user: any;
-  isAdmin: boolean;
   profileOwner?: string;
   replyingTo: number | null;
   setReplyingTo: (id: number | null) => void;
@@ -31,20 +30,19 @@ const MessageCard: React.FC<MessageCardProps> = ({
   msg, 
   depth = 0, 
   user, 
-  isAdmin,
   profileOwner,
   replyingTo, 
   setReplyingTo, 
   replyContent, 
   setReplyContent, 
   handleReply, 
-  handleDelete,
+  handleDelete, 
   handleLikeMessage,
   isReplying,
   formatTime 
 }) => {
   const isReplyingToThis = replyingTo === msg.id;
-  const canDelete = isAdmin || (user && user.username === msg.player) || (user && profileOwner && user.username === profileOwner);
+  const canDelete = (user && user.username === msg.player) || (user && profileOwner && user.username === profileOwner);
 
   return (
     <motion.div 
@@ -188,7 +186,6 @@ const MessageCard: React.FC<MessageCardProps> = ({
               msg={reply} 
               depth={depth + 1} 
               user={user}
-              isAdmin={isAdmin}
               profileOwner={profileOwner}
               replyingTo={replyingTo}
               setReplyingTo={setReplyingTo}

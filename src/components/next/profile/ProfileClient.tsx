@@ -115,7 +115,8 @@ interface Message {
   is_liked: boolean;
 }
 
-const ADMIN_KEY_STORAGE = 'admin_key';
+const ADMIN_KEY_STORAGE = 'admin_key'; // Deprecated, but kept to avoid build errors if referenced elsewhere temporarily
+
 
 const getThumbnailUrl = (url: string) => {
   if (!url) return url;
@@ -158,7 +159,7 @@ const ProfileClient = () => {
   
   // Admin State
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminKey, setAdminKey] = useState<string | null>(null);
+  // Admin key logic removed in favor of JWT role check
 
   // Profile Extended State
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -295,17 +296,18 @@ const ProfileClient = () => {
     }
   }, [username]);
 
+  useEffect(() => {
+    // Cleanup deprecated admin key
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem(ADMIN_KEY_STORAGE);
+    }
+  }, []);
   // Fetch data that depends on user authentication (likes, follow status, etc.)
   useEffect(() => {
     if (authLoading) return; // Wait for auth to initialize
 
-    // Use typeof window check for localStorage in SSR/SSG
-    if (typeof window !== 'undefined') {
-        const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
-        if (storedKey) {
-            setAdminKey(storedKey);
-            setIsAdmin(true);
-        }
+    if (user?.role === 'admin') {
+        setIsAdmin(true);
     }
     
     if (username) {
@@ -932,16 +934,14 @@ const ProfileClient = () => {
 
     if (!isConfirmed) return;
 
-    const authHeader = adminKey ? `Bearer ${adminKey}` : (token ? `Bearer ${token}` : null);
-    
-    if (!authHeader) {
+    if (!token) {
       toastError('无权删除');
       return;
     }
 
     try {
       await api.delete(`/api/message/${id}`, {
-        headers: { 'Authorization': authHeader }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (username) fetchMessages(username);
       toastSuccess('删除成功');
