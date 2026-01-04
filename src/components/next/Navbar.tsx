@@ -26,7 +26,8 @@ import {
   Sun,
   Moon,
   Monitor,
-  MessageCircle
+  MessageCircle,
+  Swords
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
@@ -159,6 +160,7 @@ const Navbar = () => {
   ];
 
   const secondaryLinks: NavLinkItem[] = [
+    { name: '职业', path: '/kitbattle', icon: Swords },
     { name: '聊天', path: '/chat', icon: MessageCircle },
     { name: '监控', path: '/monitor', icon: Activity },
     { name: '留言', path: '/messages', icon: MessageSquare },

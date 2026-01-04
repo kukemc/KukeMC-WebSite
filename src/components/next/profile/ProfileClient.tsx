@@ -99,6 +99,7 @@ interface PlayerDetails {
   ban_count: number;
   warn_history: any[];
   warn_count: number;
+  level_info?: LevelInfo;
 }
 
 interface Message {
@@ -292,7 +293,6 @@ const ProfileClient = () => {
   useEffect(() => {
     if (username) {
       fetchDetails(username);
-      fetchLevelInfo(username);
     }
   }, [username]);
 
@@ -729,24 +729,19 @@ const ProfileClient = () => {
     }
   };
 
-  const fetchLevelInfo = async (name: string) => {
-    try {
-      const res = await api.get<LevelInfo>('/api/level/my-info', { params: { username: name } });
-      setLevelInfo(res.data);
-    } catch (err) {
-      console.error('Failed to fetch level info', err);
-    }
-  };
-
   const fetchDetails = async (name: string) => {
     setLoading(true);
     try {
       const res = await api.get<PlayerDetails>(`/api/playtime/player/details`, { params: { name } });
       setDetails(res.data);
+      if (res.data.level_info) {
+        setLevelInfo(res.data.level_info);
+      }
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.error || '无法获取玩家信息');
       setDetails(null);
+      setLevelInfo(null);
     } finally {
       setLoading(false);
     }

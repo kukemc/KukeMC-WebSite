@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { getFollowStats } from '@/services/follow';
-import { getMyLevelInfo } from '@/services/leveling';
+import api from '@/utils/api';
 import LevelBadge from '@/components/LevelBadge';
 
 interface UserProfileCardProps {
@@ -32,15 +32,15 @@ export const UserProfileCard = ({ isOpen, onClose }: UserProfileCardProps) => {
     if (isOpen && user) {
       const fetchData = async () => {
         try {
-          const [followData, levelData] = await Promise.all([
+          const [followData, playerDetails] = await Promise.all([
             getFollowStats(user.username),
-            getMyLevelInfo(user.username)
+            api.get('/api/playtime/player/details', { params: { name: user.username } })
           ]);
           setStats({
             followers: followData.followers_count,
             following: followData.following_count
           });
-          setLevelInfo(levelData);
+          setLevelInfo(playerDetails.data.level_info || null);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
