@@ -24,8 +24,6 @@ interface Message {
   replies?: Message[];
 }
 
-const ADMIN_KEY_STORAGE = 'admin_key';
-
 // --- Sub Components ---
 
 const MessageContent = ({ content }: { content: string }) => {
@@ -46,7 +44,6 @@ const MessageCard = ({
   msg, 
   depth = 0, 
   user, 
-  isAdmin, 
   replyingTo, 
   setReplyingTo, 
   replyContent, 
@@ -59,7 +56,6 @@ const MessageCard = ({
   msg: Message; 
   depth?: number;
   user: any;
-  isAdmin: boolean;
   replyingTo: number | null;
   setReplyingTo: (id: number | null) => void;
   replyContent: string;
@@ -93,12 +89,12 @@ const MessageCard = ({
           <Link href={`/player/${msg.player}`} className="relative flex-shrink-0">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden ring-2 ring-slate-100 dark:ring-slate-700 shadow-sm group-hover:ring-emerald-400 dark:group-hover:ring-emerald-500 transition-all duration-300">
               <img
-                src={`https://cravatar.eu/helmavatar/${encodeURIComponent(msg.player)}/128.png`}
+                src={`https://crafthead.net/helm/${encodeURIComponent(msg.player)}/128`}
                 alt={msg.player}
                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://cravatar.eu/helmavatar/MHF_Steve/128.png';
+                  (e.target as HTMLImageElement).src = 'https://crafthead.net/helm/MHF_Steve/128';
                 }}
               />
             </div>
@@ -123,7 +119,7 @@ const MessageCard = ({
                       className="font-medium text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1"
                     >
                       <img 
-                        src={`https://cravatar.eu/helmavatar/${msg.recipient}/16.png`} 
+                        src={`https://crafthead.net/helm/${msg.recipient}/16`} 
                         className="w-4 h-4 rounded-sm" 
                         alt=""
                       />
@@ -146,7 +142,7 @@ const MessageCard = ({
                   </button>
                 )}
                 {/* Delete Button (Admin or Owner) */}
-                {(isAdmin || (user && user.username === msg.player)) && (
+                {(user && user.username === msg.player) && (
                   <button
                     onClick={() => handleDelete(msg.id)}
                     className="p-1 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200"
@@ -216,7 +212,6 @@ const MessageCard = ({
               msg={reply} 
               depth={depth + 1} 
               user={user}
-              isAdmin={isAdmin}
               replyingTo={replyingTo}
               setReplyingTo={setReplyingTo}
               replyContent={replyContent}
@@ -241,10 +236,6 @@ const MessagesClient = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Admin State
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [adminKey, setAdminKey] = useState<string | null>(null);
-
   // Posting State
   const [postContent, setPostContent] = useState('');
   const [isPosting, setIsPosting] = useState(false);
@@ -257,13 +248,6 @@ const MessagesClient = () => {
   useEffect(() => {
     if (authLoading) return;
 
-    if (typeof window !== 'undefined') {
-        const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
-        if (storedKey) {
-            setAdminKey(storedKey);
-            setIsAdmin(true);
-        }
-    }
     fetchMessages();
   }, [authLoading, token]);
 
@@ -376,18 +360,15 @@ const MessagesClient = () => {
 
     if (!isConfirmed) return;
     
-    if (!adminKey && !token) {
+    if (!token) {
         warning('请先登录');
         return;
     }
 
     try {
-      const headers: any = {};
-      if (adminKey) {
-        headers['Authorization'] = `Bearer ${adminKey}`;
-      } else if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+      const headers: any = {
+        'Authorization': `Bearer ${token}`
+      };
 
       await api.delete(`/api/message/${id}`, {
         headers
@@ -515,7 +496,6 @@ const MessagesClient = () => {
                 key={msg.id} 
                 msg={msg} 
                 user={user}
-                isAdmin={isAdmin}
                 replyingTo={replyingTo}
                 setReplyingTo={setReplyingTo}
                 replyContent={replyContent}

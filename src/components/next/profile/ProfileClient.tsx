@@ -99,6 +99,7 @@ interface PlayerDetails {
   ban_count: number;
   warn_history: any[];
   warn_count: number;
+  level_info?: LevelInfo;
 }
 
 interface Message {
@@ -115,7 +116,8 @@ interface Message {
   is_liked: boolean;
 }
 
-const ADMIN_KEY_STORAGE = 'admin_key';
+const ADMIN_KEY_STORAGE = 'admin_key'; // Deprecated, but kept to avoid build errors if referenced elsewhere temporarily
+
 
 const getThumbnailUrl = (url: string) => {
   if (!url) return url;
@@ -158,7 +160,7 @@ const ProfileClient = () => {
   
   // Admin State
   const [isAdmin, setIsAdmin] = useState(false);
-  const [adminKey, setAdminKey] = useState<string | null>(null);
+  // Admin key logic removed in favor of JWT role check
 
   // Profile Extended State
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -291,21 +293,21 @@ const ProfileClient = () => {
   useEffect(() => {
     if (username) {
       fetchDetails(username);
-      fetchLevelInfo(username);
     }
   }, [username]);
 
+  useEffect(() => {
+    // Cleanup deprecated admin key
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem(ADMIN_KEY_STORAGE);
+    }
+  }, []);
   // Fetch data that depends on user authentication (likes, follow status, etc.)
   useEffect(() => {
     if (authLoading) return; // Wait for auth to initialize
 
-    // Use typeof window check for localStorage in SSR/SSG
-    if (typeof window !== 'undefined') {
-        const storedKey = localStorage.getItem(ADMIN_KEY_STORAGE);
-        if (storedKey) {
-            setAdminKey(storedKey);
-            setIsAdmin(true);
-        }
+    if (user?.role === 'admin') {
+        setIsAdmin(true);
     }
     
     if (username) {
@@ -727,24 +729,19 @@ const ProfileClient = () => {
     }
   };
 
-  const fetchLevelInfo = async (name: string) => {
-    try {
-      const res = await api.get<LevelInfo>('/api/level/my-info', { params: { username: name } });
-      setLevelInfo(res.data);
-    } catch (err) {
-      console.error('Failed to fetch level info', err);
-    }
-  };
-
   const fetchDetails = async (name: string) => {
     setLoading(true);
     try {
       const res = await api.get<PlayerDetails>(`/api/playtime/player/details`, { params: { name } });
       setDetails(res.data);
+      if (res.data.level_info) {
+        setLevelInfo(res.data.level_info);
+      }
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.error || '无法获取玩家信息');
       setDetails(null);
+      setLevelInfo(null);
     } finally {
       setLoading(false);
     }
@@ -932,16 +929,14 @@ const ProfileClient = () => {
 
     if (!isConfirmed) return;
 
-    const authHeader = adminKey ? `Bearer ${adminKey}` : (token ? `Bearer ${token}` : null);
-    
-    if (!authHeader) {
+    if (!token) {
       toastError('无权删除');
       return;
     }
 
     try {
       await api.delete(`/api/message/${id}`, {
-        headers: { 'Authorization': authHeader }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (username) fetchMessages(username);
       toastSuccess('删除成功');
@@ -1465,7 +1460,7 @@ const ProfileClient = () => {
                             {profile.likers.map(liker => (
                               <Link href={`/player/${liker}`} key={liker} title={liker}>
                                 <img 
-                                  src={`https://cravatar.eu/helmavatar/${liker}/32.png`} 
+                                  src={`https://crafthead.net/helm/${liker}/32`} 
                                   className="w-8 h-8 rounded-md border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform"
                                   alt={liker}
                                 />

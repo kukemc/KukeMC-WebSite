@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getMyLevelInfo, getCheckInStatus, getTasks, getLeaderboard, LevelInfo, CheckInStatus, Task, LeaderboardEntry } from '@/services/leveling';
+import { getCheckInStatus, getTasks, getLeaderboard, LevelInfo, CheckInStatus, Task, LeaderboardEntry } from '@/services/leveling';
+import api from '@/utils/api';
 import LevelCard from '@/components/leveling/LevelCard';
 import TaskBoard from '@/components/leveling/TaskBoard';
 import CheckInModal from '@/components/leveling/CheckInModal';
@@ -23,13 +24,13 @@ const UserLevelDashboardClient: React.FC = () => {
   const fetchData = async () => {
     if (!user?.username) return;
     try {
-      const [i, c, t, l] = await Promise.all([
-        getMyLevelInfo(user.username),
+      const [playerDetails, c, t, l] = await Promise.all([
+        api.get('/api/playtime/player/details', { params: { name: user.username } }),
         getCheckInStatus(user.username),
         getTasks(user.username),
         getLeaderboard()
       ]);
-      setInfo(i);
+      setInfo(playerDetails.data.level_info || null);
       setCheckInStatus(c);
       setTasks(t);
       setLeaderboard(l);

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getFollowStats } from '../services/follow';
-import { getMyLevelInfo } from '../services/leveling';
+import api from '../utils/api';
 import LevelBadge from '@/components/LevelBadge';
 
 interface UserProfileCardProps {
@@ -30,15 +30,15 @@ export const UserProfileCard = ({ isOpen, onClose }: UserProfileCardProps) => {
     if (isOpen && user) {
       const fetchData = async () => {
         try {
-          const [followData, levelData] = await Promise.all([
+          const [followData, playerDetails] = await Promise.all([
             getFollowStats(user.username),
-            getMyLevelInfo(user.username)
+            api.get('/api/playtime/player/details', { params: { name: user.username } })
           ]);
           setStats({
             followers: followData.followers_count,
             following: followData.following_count
           });
-          setLevelInfo(levelData);
+          setLevelInfo(playerDetails.data.level_info || null);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
         }
@@ -178,22 +178,11 @@ export const UserProfileCard = ({ isOpen, onClose }: UserProfileCardProps) => {
                     <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
                     <Link to={`/player/${user.username}`}>
                         <img 
-                            src={`https://cravatar.eu/helmavatar/${user.username}/128.png`} 
+                            src={`https://crafthead.net/helm/${user.username}/128`} 
                             alt={user.username}
                             className="w-24 h-24 rounded-full border-[5px] border-white dark:border-slate-900 relative z-10 bg-white dark:bg-slate-800 transition-transform duration-300 group-hover:scale-105 shadow-lg"
                         />
                     </Link>
-                    {user.role === 'admin' && (
-                        <motion.div 
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: 0.3, type: "spring" }}
-                          className="absolute bottom-1 right-1 bg-gradient-to-br from-yellow-300 to-yellow-500 text-yellow-900 p-1.5 rounded-full border-2 border-white dark:border-slate-900 z-20 shadow-sm" 
-                          title="管理员"
-                        >
-                            <Shield size={14} fill="currentColor" />
-                        </motion.div>
-                    )}
                 </motion.div>
               </div>
 

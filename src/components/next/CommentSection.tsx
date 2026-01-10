@@ -483,7 +483,7 @@ const CommentItem = ({
   onLike?: (id: number) => void,
   depth?: number
 }) => {
-  const isOwner = currentUser && (currentUser.username === comment.author.username || currentUser.role === 'admin');
+  const isOwner = currentUser && (currentUser.username === comment.author.username);
   const isReplying = replyingToId === comment.id;
 
   // Common Reply Input Area

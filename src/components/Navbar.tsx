@@ -273,11 +273,6 @@ const Navbar = () => {
                           <div className="flex items-center gap-2 flex-1">
                             <link.icon size={16} />
                             {link.name}
-                            {link.path === '/tickets' && ticketCount > 0 && (
-                              <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.25rem] text-center">
-                                {ticketCount}
-                              </span>
-                            )}
                           </div>
                           {link.external && <ExternalLink size={12} className="opacity-50" />}
                         </Link>

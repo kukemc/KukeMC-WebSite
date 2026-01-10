@@ -326,8 +326,10 @@ const TicketCenterClient = () => {
 
     setSubmitting(true);
     try {
+      // Remove player_name as backend retrieves it from token
+      const { player_name, ...rest } = createForm;
       const payload = {
-        ...createForm,
+        ...rest,
         player_uuid: playerUuid
       };
       const res = await api.post('/api/feedback/create', payload);
@@ -380,9 +382,7 @@ const TicketCenterClient = () => {
     try {
       await api.post('/api/feedback/comment', {
         ticket_id: selectedTicketId,
-        message: contentToSend,
-        user: user.username,
-        player_name: user.username
+        message: contentToSend
       });
       // Success - WS will handle sync
     } catch (err: any) {
@@ -671,57 +671,6 @@ const TicketCenterClient = () => {
                        {ticketDetail.item.description}
                      </p>
                   </div>
-
-                  {user?.role === 'admin' && (
-                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-3 items-center">
-                      <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">管理操作:</div>
-                      
-                      {/* Assign to me */}
-                      {ticketDetail.item.resolver !== user.username && (
-                        <button
-                          onClick={handleAssign}
-                          className="px-3 py-1.5 bg-brand-50 text-brand-600 hover:bg-brand-100 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/40 rounded-lg text-xs font-medium transition-colors flex items-center gap-1"
-                        >
-                          <ShieldCheck size={14} />
-                          受理此工单
-                        </button>
-                      )}
-
-                      <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-700 mx-1" />
-
-                      {/* Status Actions */}
-                      {['open', 'in_progress', 'resolved', 'rejected'].map(status => {
-                        if (status === ticketDetail.item.status) return null;
-                        
-                        const labels: Record<string, string> = {
-                          open: '重置为待受理',
-                          in_progress: '标记为处理中',
-                          resolved: '标记为已解决',
-                          rejected: '驳回工单'
-                        };
-                        
-                        const colors: Record<string, string> = {
-                          open: 'text-slate-600 bg-slate-100 hover:bg-slate-200',
-                          in_progress: 'text-blue-600 bg-blue-100 hover:bg-blue-200',
-                          resolved: 'text-green-600 bg-green-100 hover:bg-green-200',
-                          rejected: 'text-red-600 bg-red-100 hover:bg-red-200'
-                        };
-
-                        return (
-                          <button
-                            key={status}
-                            onClick={() => handleUpdateStatus(status)}
-                            className={clsx(
-                              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
-                              colors[status]
-                            )}
-                          >
-                            {labels[status]}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
 
                 {/* Conversation Logs */}

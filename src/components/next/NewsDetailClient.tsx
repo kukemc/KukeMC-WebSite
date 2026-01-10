@@ -133,7 +133,6 @@ const NewsDetailClient = ({ initialNews }: { initialNews: NewsItem }) => {
 
     try {
       await api.post(`/api/website/news/${news.id}/comments`, {
-        author_name: user.username || 'Anonymous',
         content: content,
         parent_id: parentId
       });

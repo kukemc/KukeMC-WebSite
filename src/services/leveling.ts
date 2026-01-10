@@ -44,11 +44,6 @@ export interface Task {
   xp: number;
 }
 
-export const getMyLevelInfo = async (username: string) => {
-  const response = await api.get<LevelInfo>('/api/level/my-info', { params: { username } });
-  return response.data;
-};
-
 export const getCheckInStatus = async (username: string) => {
   const response = await api.get<CheckInStatus>('/api/level/check-in/status', { 
     params: { 
