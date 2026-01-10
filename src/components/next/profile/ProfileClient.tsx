@@ -26,8 +26,10 @@ import { useToast } from '@/context/ToastContext';
 import { useConfirm } from '@/context/ConfirmContext';
 
 import { Post, FollowStats } from '@/types/activity';
+import { KitBattleStats } from '@/types/kitbattle';
 import MessageCard from './MessageCard';
 import UserListModal from './UserListModal';
+import GameStatsCard from './GameStatsCard';
 
 interface UserProfile {
   username: string;
@@ -141,6 +143,7 @@ const ProfileClient = () => {
   
   const [details, setDetails] = useState<PlayerDetails | null>(null);
   const [levelInfo, setLevelInfo] = useState<LevelInfo | null>(null);
+  const [kitBattleStats, setKitBattleStats] = useState<KitBattleStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -315,6 +318,7 @@ const ProfileClient = () => {
       fetchProfile(username);
       fetchAlbums(username);
       fetchFollowStatsData(username);
+      fetchKitBattleStats(username);
     }
   }, [username, token, authLoading]); 
 
@@ -364,6 +368,16 @@ const ProfileClient = () => {
       setFollowStats(stats);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const fetchKitBattleStats = async (name: string) => {
+    try {
+        const res = await api.get(`/api/server/kitbattle/player/${name}`);
+        setKitBattleStats(res.data);
+    } catch (error) {
+        // Ignore 404 or other errors, just don't show the card
+        setKitBattleStats(null);
     }
   };
 
@@ -1363,6 +1377,9 @@ const ProfileClient = () => {
                transition={{ duration: 0.3, ease: "easeOut" }}
                className="space-y-8"
              >
+               {/* Game Stats Card */}
+               <GameStatsCard kitBattleStats={kitBattleStats} />
+
                {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
