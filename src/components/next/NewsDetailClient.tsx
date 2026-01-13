@@ -162,7 +162,7 @@ const NewsDetailClient = ({ initialNews }: { initialNews: NewsItem }) => {
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6 lg:px-8">
       
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <AnimatePresence>
           {floatingEmojis.map(anim => (
             <motion.div
@@ -210,10 +210,10 @@ const NewsDetailClient = ({ initialNews }: { initialNews: NewsItem }) => {
             <span>{news.author}</span>
           </div>
 
-          <div className="prose prose-slate dark:prose-invert prose-emerald max-w-none">
+          <div className="w-full max-w-none">
             <MarkdownViewer 
               content={news.content}
-              className="!p-0 !min-h-0"
+              className="!p-0 !min-h-0 !max-w-none prose-slate prose-emerald w-full"
             />
           </div>
 

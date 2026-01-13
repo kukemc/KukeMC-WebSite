@@ -1253,6 +1253,21 @@ const ProfileClient = () => {
               </div>
 
               <div className="flex flex-wrap justify-center md:justify-start gap-3 items-center">
+                {/* Verification Badge */}
+                {details.verification?.is_verified && (
+                  <a 
+                    href={details.verification.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 rounded-full bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-sm font-medium flex items-center gap-1.5 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition-colors border border-yellow-200 dark:border-yellow-800/50"
+                  >
+                    <div className="bg-yellow-400 rounded-full p-0.5 border border-white dark:border-slate-900 shadow-sm flex items-center justify-center">
+                       <Zap className="w-2.5 h-2.5 text-white fill-current" />
+                    </div>
+                    {getPlatformLabel(details.verification.type)}
+                  </a>
+                )}
+
                 {details.qq ? (
                    <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm font-medium flex items-center gap-1.5">
                      <MessageSquare size={14} />
@@ -1276,21 +1291,6 @@ const ProfileClient = () => {
                    </span>
                 )}
                 
-                {/* Verification Badge */}
-                {details.verification?.is_verified && (
-                  <a 
-                    href={details.verification.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-3 py-1 rounded-full bg-yellow-50 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-sm font-medium flex items-center gap-1.5 hover:bg-yellow-100 dark:hover:bg-yellow-900/50 transition-colors border border-yellow-200 dark:border-yellow-800/50"
-                  >
-                    <div className="bg-yellow-400 rounded-full p-0.5 border border-white dark:border-slate-900 shadow-sm flex items-center justify-center">
-                       <Zap className="w-2.5 h-2.5 text-white fill-current" />
-                    </div>
-                    {getPlatformLabel(details.verification.type)}
-                  </a>
-                )}
-
                  {details.warn_count > 0 && (
                    <span className="px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-sm font-medium flex items-center gap-1.5">
                      <AlertTriangle size={14} />

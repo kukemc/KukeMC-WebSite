@@ -5,7 +5,7 @@ import Link from 'next/link';
 import MarkdownViewer from '@/components/MarkdownViewer';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
-import { Heart, MessageSquare, Bookmark, Share2, Trash2, Check, Edit2, Send, X, Loader2, Eye, Pin, Award, Shield, Zap } from 'lucide-react';
+import { Heart, MessageSquare, Bookmark, Share2, Trash2, Check, Edit2, Send, X, Loader2, Eye, Pin, Award, Zap } from 'lucide-react';
 import { Post, Comment } from '@/types/activity';
 import { useAuth } from '@/context/AuthContext';
 import { toggleLikePost, toggleCollectPost, deletePost } from '@/services/activity';
@@ -366,8 +366,8 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
                 }}
               />
               {post.author.verification?.is_verified && (
-                 <div className="absolute -bottom-1 -right-1 z-10 bg-yellow-400 rounded-full p-0.5 border-2 border-white dark:border-slate-900 shadow-sm">
-                    <Shield className="w-2 h-2 text-white fill-current" />
+                  <div className="absolute -bottom-1 -right-1 z-10 bg-yellow-400 rounded-full p-0.5 border-2 border-white dark:border-slate-900 shadow-sm">
+                    <Zap className="w-3 h-3 text-white fill-current" />
                  </div>
               )}
             </Link>
@@ -393,17 +393,7 @@ const PostCard = forwardRef<HTMLDivElement, PostCardProps>(({ post, onUpdate, on
                    </span>
                 )}
 
-                {post.author.verification?.is_verified && (
-                  <a 
-                    href={post.author.verification.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="flex items-center justify-center w-4 h-4 rounded-full bg-yellow-400 text-white hover:bg-yellow-500 transition-colors shadow-sm"
-                    title={`认证: ${getPlatformLabel(post.author.verification.type)}`}
-                  >
-                     <Shield className="w-2.5 h-2.5 fill-current" />
-                  </a>
-                )}
+
                 
                 {/* Follow Button */}
                 {!isAuthor && user && (

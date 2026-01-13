@@ -21,7 +21,8 @@ import {
   Send,
   Loader2,
   ChevronRight,
-  Clock
+  Clock,
+  Megaphone
 } from 'lucide-react';
 import { applyVerification, getVerificationStatus, VerificationRequest } from '@/services/verification';
 
@@ -30,7 +31,7 @@ const benefits = [
   {
     icon: Zap,
     title: '专属认证标识',
-    desc: '官网头像旁显示尊贵"小闪电"认证图标，彰显独特身份',
+    desc: '头像旁显示尊贵"小闪电"认证图标，彰显独特身份',
     color: 'text-yellow-500',
     bg: 'bg-yellow-500/10'
   },
@@ -40,6 +41,13 @@ const benefits = [
     desc: '获得服务器内全服可见的【主播认证】专属定制称号',
     color: 'text-purple-500',
     bg: 'bg-purple-500/10'
+  },
+  {
+    icon: Megaphone,
+    title: '专属进服提示',
+    desc: '专属定制进服通报【Bilibili UP主】xxx 进入了服务器',
+    color: 'text-green-500',
+    bg: 'bg-green-500/10'
   },
   {
     icon: TrendingUp,
@@ -234,7 +242,7 @@ const VerificationPage = () => {
             </div>
 
             {/* Benefits Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-20">
               {benefits.map((item, index) => (
                 <motion.div
                   key={index}

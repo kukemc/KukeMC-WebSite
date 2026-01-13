@@ -9,10 +9,19 @@ interface Props {
   kitBattleStats: KitBattleStats | null;
 }
 
+// 辅助函数：将文本颜色转换为带透明度的背景色
+const getBgColorClass = (textColorClass: string) => {
+  return textColorClass
+    .replace(/text-/g, 'bg-')
+    .split(' ')
+    .map(cls => cls + '/10')
+    .join(' ');
+};
+
 // 紧凑型数据项
 const CompactStatItem = ({ label, value, color, icon: Icon }: { label: string, value: string | number, color: string, icon: any }) => (
   <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 transition-colors hover:bg-gray-100 dark:hover:bg-white/10 group/item">
-    <div className={clsx("p-2 rounded-lg bg-opacity-10 transition-transform group-hover/item:scale-110", color.replace('text-', 'bg-'))}>
+    <div className={clsx("p-2 rounded-lg transition-transform group-hover/item:scale-110", getBgColorClass(color))}>
       <Icon className={clsx("w-4 h-4", color)} />
     </div>
     <div className="flex flex-col">
@@ -81,7 +90,7 @@ const CompactKitBattleCard = ({ stats, onClick }: { stats: KitBattleStats, onCli
 
 const CompactComingSoonCard = ({ title, icon: Icon, color }: { title: string, icon: any, color: string }) => (
   <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gray-50 dark:bg-[#0f0f11] border border-gray-200 dark:border-white/5 p-5 flex flex-col items-center justify-center text-center opacity-60 hover:opacity-100 transition-all grayscale hover:grayscale-0 shadow-sm dark:shadow-none hover:shadow-lg group">
-     <div className={clsx("p-4 rounded-2xl bg-opacity-10 mb-3 transition-transform group-hover:scale-110 duration-500", color.replace(/text-/g, 'bg-'))}>
+     <div className={clsx("p-4 rounded-2xl mb-3 transition-transform group-hover:scale-110 duration-500", getBgColorClass(color))}>
         <Icon className={clsx("w-8 h-8", color)} />
      </div>
      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
